@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useId } from "react";
 import "../App.css";
 
 type onetask = {
-    id: number
-    text: string
-    isCompleted: boolean
-}
+  id: number;
+  text: string;
+  isCompleted: boolean;
+};
 
 function ToDo() {
   const [inputValue, setInputValue] = useState("");
@@ -19,20 +19,26 @@ function ToDo() {
     if (inputValue == "") return;
 
     const newTask = {
-        id: Date.now(),
-        text: inputValue,
-        isCompleted: false
+      id: Date.now(),
+      text: inputValue,
+      isCompleted: false,
     };
-
 
     setTasks([...tasks, newTask]);
     setInputValue("");
-
   };
- console.log("tasks", tasks);
- 
-
-
+  const handleCheckboxChange = (id: any) => {
+    setTasks(
+      tasks.map((task) => {
+        if (task.id === id) {
+          return { ...task, isCompleted: !task.isCompleted };
+        }
+        return task;
+      }),
+    );
+  };
+  
+  
   return (
     <div className="container">
       <div className="title">
@@ -49,15 +55,19 @@ function ToDo() {
       </div>
       <div className="tasklist">
         <ul>
-            {tasks.map((task) =>(
-                <li key={task.id}>
-                    <input type="checkbox" />
-                    <span>{task.text}</span>
-                    <button>Edit</button>
-                    <button>Delete</button>
-                </li>
-            ))}
-        </ul> 
+          {tasks.map((task) => (
+            <li key={task.id} >
+              <input 
+              type="checkbox"
+              checked = {task.isCompleted}
+              onChange={() => handleCheckboxChange(task.id)}
+              />
+              <span style={{ textDecoration : task.isCompleted ? 'line-through' : 'none'}}>{task.text}</span>
+              <button>Edit</button>
+              <button>Delete</button>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
