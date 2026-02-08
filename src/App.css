@@ -17,6 +17,10 @@ body{
   margin-right: 15px;
 }
 
+input{
+  margin-right: 10px;
+}
+
 .input-add{
   display: flex;
   justify-content: space-between;
@@ -27,7 +31,6 @@ body{
 }
 
 button{
-  margin: 2px;
   padding: 10px 20px;
   width: auto;
   cursor: pointer;
