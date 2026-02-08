@@ -10,6 +10,7 @@ type onetask = {
 function ToDo() {
   const [inputValue, setInputValue] = useState("");
   const [tasks, setTasks] = useState<onetask[]>([]);
+  const [editId, setEditId] = useState<number | null>(null);
 
   const handleInput = (e: any) => {
     setInputValue(e.target.value);
@@ -27,7 +28,8 @@ function ToDo() {
     setTasks([...tasks, newTask]);
     setInputValue("");
   };
-  const handleCheckboxChange = (id: any) => {
+
+  const handleCheckboxChange = (id: number) => {
     setTasks(
       tasks.map((task) => {
         if (task.id === id) {
@@ -38,7 +40,30 @@ function ToDo() {
     );
   };
   
+  const handleDelete = (id: number) => {
+    setTasks(prevTasks => prevTasks.filter(task => task.id !== id));
+  }
+
+  const handleEdit = (data: onetask) => {
+    setInputValue(data.text)
+    setEditId(data.id)
+  }
+
+  const handleUpdate = () => {
+    if(editId === null) return;
+
+    setTasks(
+      tasks.map((task) =>
+        task.id === editId
+        ? { ...task, text:inputValue }
+        : task
+      )
+    );
+    setInputValue("");
+    setEditId(null);
+  };
   
+
   return (
     <div className="container">
       <div className="title">
@@ -51,20 +76,26 @@ function ToDo() {
           onChange={handleInput}
           placeholder="Add your tasks"
         />
-        <button onClick={handleAddTask}>Add Task</button>
+        {editId == null ?<button onClick={handleAddTask}>Add Task</button> : <button onClick={handleUpdate}>Update</button>}
+        
+        
       </div>
       <div className="tasklist">
         <ul>
           {tasks.map((task) => (
             <li key={task.id} >
               <input 
+              className="checkboxes"
               type="checkbox"
               checked = {task.isCompleted}
               onChange={() => handleCheckboxChange(task.id)}
               />
               <span style={{ textDecoration : task.isCompleted ? 'line-through' : 'none'}}>{task.text}</span>
-              <button>Edit</button>
-              <button>Delete</button>
+              <div className="right">
+                <button onClick={() => handleEdit(task)}>Edit</button>
+                <button onClick={() => handleDelete(task.id)}>Delete</button>
+              </div>
+              
             </li>
           ))}
         </ul>
