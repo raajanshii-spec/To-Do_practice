@@ -1,8 +1,8 @@
-import { useState } from 'react'
-import ToDo from './components/ToDoList'
+import ToDo from "./components/ToDoList";
 
-function App() {
-  <ToDo />
+
+function App(): JSX.Element {
+  return <ToDo />;
 }
 
 export default App;

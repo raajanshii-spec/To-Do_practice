@@ -1,5 +1,7 @@
-import { useState, useId } from "react";
+import { useState, useId, useEffect } from "react";
 import "../App.css";
+import { useDispatch, useSelector } from "react-redux";
+import { addTask, checkTask, deleteTask, editTask } from "../utils/taskSlice";
 
 type onetask = {
   id: number;
@@ -11,37 +13,32 @@ function ToDo() {
   const [inputValue, setInputValue] = useState("");
   const [tasks, setTasks] = useState<onetask[]>([]);
   const [editId, setEditId] = useState<number | null>(null);
+  const taskList = useSelector((state: any) => state.tasks);
+
+  console.log(taskList);
+  
 
   const handleInput = (e: any) => {
     setInputValue(e.target.value);
   };
 
+  const dispatch = useDispatch();
   const handleAddTask = () => {
-    if (inputValue == "") return;
 
-    const newTask = {
+    dispatch(addTask({
       id: Date.now(),
       text: inputValue,
       isCompleted: false,
-    };
-
-    setTasks([...tasks, newTask]);
+    }))
     setInputValue("");
   };
 
   const handleCheckboxChange = (id: number) => {
-    setTasks(
-      tasks.map((task) => {
-        if (task.id === id) {
-          return { ...task, isCompleted: !task.isCompleted };
-        }
-        return task;
-      }),
-    );
+    dispatch(checkTask(id));
   };
   
   const handleDelete = (id: number) => {
-    setTasks(prevTasks => prevTasks.filter(task => task.id !== id));
+    dispatch(deleteTask(id));
   }
 
   const handleEdit = (data: onetask) => {
@@ -50,20 +47,14 @@ function ToDo() {
   }
 
   const handleUpdate = () => {
-    if(editId === null) return;
-
-    setTasks(
-      tasks.map((task) =>
-        task.id === editId
-        ? { ...task, text:inputValue }
-        : task
-      )
-    );
+    dispatch(editTask({
+      id: editId,
+      text: inputValue,
+    }))
     setInputValue("");
     setEditId(null);
   };
   
-
   return (
     <div className="container">
       <div className="title">
@@ -82,7 +73,7 @@ function ToDo() {
       </div>
       <div className="tasklist">
         <ul>
-          {tasks.map((task) => (
+          {taskList?.tasks?.map((task :onetask) => (
             <li key={task.id} >
               <input 
               className="checkboxes"

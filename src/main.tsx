@@ -1,10 +1,14 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import ToDo from './components/ToDoList.tsx'
 import App from './App.tsx'
+import appStore from './utils/appStore';
+import { Provider } from 'react-redux';
+
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ToDo />
+    <Provider store={appStore}>
+      <App />
+    </Provider>
   </StrictMode>,
 )
